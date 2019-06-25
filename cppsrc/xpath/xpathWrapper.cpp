@@ -8,6 +8,7 @@ Napi::Object XpathWrapper::Init(Napi::Env env, Napi::Object exports) {
   Napi::Function func = DefineClass(env, "XpathWrapper", {
     InstanceMethod("getNumElems", &XpathWrapper::GetNumElems),
     InstanceMethod("getData", &XpathWrapper::GetData),
+    InstanceMethod("free", &XpathWrapper::Free),
   });
 
   constructor = Napi::Persistent(func);
@@ -61,4 +62,9 @@ Napi::Value XpathWrapper::GetData(const Napi::CallbackInfo& info) {
   }
   
   return outputArray;
+}
+
+Napi::Value XpathWrapper::Free(const Napi::CallbackInfo& info){
+  delete this->xpathParser_;
+  return Napi::Value();
 }

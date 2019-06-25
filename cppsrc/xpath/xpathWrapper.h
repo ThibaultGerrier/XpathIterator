@@ -10,5 +10,6 @@ class XpathWrapper : public Napi::ObjectWrap<XpathWrapper> {
   static Napi::FunctionReference constructor;
   Napi::Value GetNumElems(const Napi::CallbackInfo& info); 
   Napi::Value GetData(const Napi::CallbackInfo& info); 
+  Napi::Value Free(const Napi::CallbackInfo& info);
   XpathParser *xpathParser_; 
 };
