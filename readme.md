@@ -1,1 +1,1 @@
-# Node js CPP addon for Xpath
+# Node js CPP addon for Xpath / Pugixml

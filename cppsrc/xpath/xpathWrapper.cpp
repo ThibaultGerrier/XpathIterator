@@ -29,7 +29,11 @@ XpathWrapper::XpathWrapper(const Napi::CallbackInfo& info) : Napi::ObjectWrap<Xp
 
   Napi::String xml = info[0].As<Napi::String>();
   Napi::String iterator = info[1].As<Napi::String>();
-  this->xpathParser_ = new XpathParser(xml.ToString(), iterator.ToString());
+  try {
+    this->xpathParser_ = new XpathParser(xml.ToString(), iterator.ToString());
+  } catch (const std::exception& e) {
+    Napi::TypeError::New(env, "Error intializin Xpath Iterator").ThrowAsJavaScriptException();
+  }
 }
 
 Napi::Value XpathWrapper::GetNumElems(const Napi::CallbackInfo& info) {
@@ -45,13 +49,20 @@ Napi::Value XpathWrapper::GetNumElems(const Napi::CallbackInfo& info) {
 Napi::Value XpathWrapper::GetData(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
-
+  
   if (info.Length() != 2 || !info[0].IsNumber() || !info[1].IsString()) {
     Napi::TypeError::New(env, "Invalid input").ThrowAsJavaScriptException();
+    return Napi::Array::New(env, 0);
   }
 
   Napi::Number index = info[0].As<Napi::Number>();
   Napi::String selector = info[1].As<Napi::String>();
+
+  if ((int)index < 0 || (int)index > this->xpathParser_->getNumElems()-1) {
+    Napi::TypeError::New(env, "Invalid index").ThrowAsJavaScriptException();
+    return Napi::Array::New(env, 0);
+  }
+
   std::vector<std::string> results = this->xpathParser_->getData(index, selector);
 
   int length = results.size();
