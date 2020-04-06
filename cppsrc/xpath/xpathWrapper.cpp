@@ -32,7 +32,7 @@ XpathWrapper::XpathWrapper(const Napi::CallbackInfo& info) : Napi::ObjectWrap<Xp
   try {
     this->xpathParser_ = new XpathParser(xml.ToString(), iterator.ToString());
   } catch (const std::exception& e) {
-    Napi::TypeError::New(env, "Error intializin Xpath Iterator").ThrowAsJavaScriptException();
+    Napi::TypeError::New(env, std::string("Error intializing Xpath Iterator: ") + e.what()).ThrowAsJavaScriptException();
   }
 }
 
